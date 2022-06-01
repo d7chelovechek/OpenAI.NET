@@ -3,8 +3,9 @@
     public static class Permission
     {
         public const string None = "None";
+        public const string Untouchable = "Untouchable";
         public const string CanCallApi = "CanCallApi";
         public const string CanManageUsers = "CanManageUsers";
-        public const string All = CanCallApi + "," + CanManageUsers;
+        public const string All = CanCallApi + "," + CanManageUsers + "," + Untouchable;
     }
 }

@@ -47,7 +47,7 @@ namespace OpenAI.NET.Web.Controllers
             ResponseBuilder builder = new(typeof(CompleteRequestParameters), request);
             Response response = builder.Build();
 
-            if (response.Errors is not null)
+            if (response.Exceptions is not null)
             {
                 return BadRequest(JsonConvert.SerializeObject(
                     response,
@@ -62,12 +62,12 @@ namespace OpenAI.NET.Web.Controllers
             }
             catch (Exception ex)
             {
-                builder.AddError(
+                builder.AddException(
                     "Exception in using OpenAI API",
                     ex.Message);
             }
 
-            if (response.Errors is not null)
+            if (response.Exceptions is not null)
             {
                 return BadRequest(JsonConvert.SerializeObject(
                     response,

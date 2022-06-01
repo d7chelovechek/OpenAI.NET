@@ -1,4 +1,5 @@
-﻿using System.Security.Cryptography;
+﻿using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace OpenAI.NET.Web.Services
@@ -9,7 +10,13 @@ namespace OpenAI.NET.Web.Services
         {
             using (SHA256 algorithm = SHA256.Create())
             {
-                return Encoding.UTF8.GetString(algorithm.ComputeHash(Encoding.ASCII.GetBytes(value)));
+                string result = string.Empty;
+
+                algorithm.ComputeHash(Encoding.ASCII.GetBytes(value))
+                    .ToList()
+                    .ForEach(x => result += x.ToString("x2"));
+
+                return result;
             }
         }
     }

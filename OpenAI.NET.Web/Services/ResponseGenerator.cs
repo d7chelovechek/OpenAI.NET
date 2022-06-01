@@ -33,36 +33,61 @@ namespace OpenAI.NET.Web.Services
             {
                 object value = property.GetValue(_instance);
 
-                if (value is not null)
+                if (value is Array array)
                 {
-                    _response.Parameters ??= new Dictionary<string, string>();
-
-                    _response.Parameters.Add(
-                        property.Name,
-                        value.ToString());
+                    foreach (object item in array)
+                    {
+                        CheckParameter(property, item);
+                    }
                 }
                 else
                 {
-                    AddError(
-                        "One or more of the specified parameters was missing or invalid",
-                        $"Parameter {property.Name} can not be empty or null");
+                    CheckParameter(property, value);
                 }
             }
         }
 
-        public void AddError(string message, string errorMessage)
+        private void CheckParameter(PropertyInfo property, object value)
+        {
+            try
+            {
+                if (value is not null)
+                {
+                    _response.Parameters ??= new List<Parameter>();
+
+                    _response.Parameters.Add(new Parameter()
+                    {
+                        Name = property.Name,
+                        Value = value.ToString()
+                    });
+                }
+                else
+                {
+                    throw new Exception($"Parameter {property.Name} can not be empty or null");
+                }
+            }
+            catch (Exception ex)
+            {
+                AddException(
+                    "Exception in parameters checking:" +
+                    " one or more of the specified parameters was missing or invalid",
+                    ex.Message);
+            }
+        }
+
+        public void AddException(string exceptionBody, string exceptionMessage)
         {
             if (_response.Body is null)
             {
-                _response.Body = message;
+                _response.Body = exceptionBody;
             }
 
-            if (_response.Errors is null)
+            if (_response.Exceptions is null)
             {
-                _response.Errors = new List<string>();
+                _response.Exceptions = new List<string>();
             }
 
-            _response.Errors.Add(errorMessage);
+            _response.Exceptions.Add(exceptionMessage);
         }
     }
 }

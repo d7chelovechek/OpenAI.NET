@@ -2,6 +2,7 @@
 using OpenAI.NET.Web.EntityFrameworkCore.Interfaces;
 using OpenAI.NET.Web.EntityFrameworkCore.Models;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace OpenAI.NET.Web.EntityFrameworkCore.Repositories
@@ -30,6 +31,11 @@ namespace OpenAI.NET.Web.EntityFrameworkCore.Repositories
         public async Task<List<User>> GetAllAsync()
         {
             return await _apiContext.Users.ToListAsync();
+        }
+
+        public async Task<User> GetUserByNameAsync(string userName)
+        {
+            return await _apiContext.Users.FirstOrDefaultAsync(x => x.Name.Equals(userName));
         }
     }
 }
