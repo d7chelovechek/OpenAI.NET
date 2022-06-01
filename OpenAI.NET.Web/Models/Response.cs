@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 
-namespace OpenAI.NET.Models
+namespace OpenAI.NET.Web.Models
 {
     public class Response
     {
-        public string Message { get; set; }
+        public object Body { get; set; }
         public Dictionary<string, string> Parameters { get; set; }
         public List<string> Errors { get; set; }
     }
