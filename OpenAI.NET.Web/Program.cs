@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 
-namespace OpenAI.NET
+namespace OpenAI.NET.Web
 {
     public class Program
     {
@@ -12,9 +12,9 @@ namespace OpenAI.NET
 
         public static IHostBuilder CreateHostBuilder(string[] args)
         {
-            return Host.CreateDefaultBuilder(args).ConfigureWebHostDefaults(ツ =>
+            return Host.CreateDefaultBuilder(args).ConfigureWebHostDefaults(x =>
             {
-                ツ.UseStartup<Startup>();
+                x.UseStartup<Startup>();
             });
         }
     }
