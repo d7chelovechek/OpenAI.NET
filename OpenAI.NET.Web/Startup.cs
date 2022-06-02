@@ -67,8 +67,6 @@ namespace OpenAI.NET.Web
                 app.UseHsts();
             }
 
-            app.UseHttpsRedirection();
-
             app.UseRouting();
 
             app.UseAuthentication();

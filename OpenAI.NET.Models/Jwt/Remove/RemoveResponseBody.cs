@@ -1,4 +1,6 @@
-﻿namespace OpenAI.NET.Models.Jwt.Remove
+﻿using System;
+
+namespace OpenAI.NET.Models.Jwt.Remove
 {
     public class RemoveResponseBody
     {

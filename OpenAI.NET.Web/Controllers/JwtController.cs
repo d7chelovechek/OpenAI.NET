@@ -67,7 +67,7 @@ namespace OpenAI.NET.Web.Controllers
 
             try
             {
-                if (await GetClaimsIdentity(request) is
+                if (await GetClaimsIdentityAsync(request) is
                     (ClaimsIdentity, EntityFrameworkCore.Models.User) identity)
                 {
                     DateTime date = DateTime.UtcNow;
@@ -134,7 +134,7 @@ namespace OpenAI.NET.Web.Controllers
 
             try
             {
-                if (await GetUserByName(request.Name) is null)
+                if (await GetUserByNameAsync(request.Name) is null)
                 {
                     if(!TimeSpan.TryParse(request.TokenLifeTime, out TimeSpan tokenLifeTime))
                     {
@@ -203,7 +203,7 @@ namespace OpenAI.NET.Web.Controllers
 
             try
             {
-                if (await GetUserByName(request.Name) is User user)
+                if (await GetUserByNameAsync(request.Name) is User user)
                 {
                     if (user.Permissions.Contains(Permission.Untouchable))
                     {
@@ -252,7 +252,7 @@ namespace OpenAI.NET.Web.Controllers
         }
 
         [NonAction]
-        private async Task<(ClaimsIdentity, User)> GetClaimsIdentity(
+        private async Task<(ClaimsIdentity, User)> GetClaimsIdentityAsync(
             AuthRequestParameters request)
         {
             List<User> users = await _userRepository.GetAllAsync();
@@ -290,7 +290,7 @@ namespace OpenAI.NET.Web.Controllers
         }
 
         [NonAction]
-        private async Task<User> GetUserByName(
+        private async Task<User> GetUserByNameAsync(
             string userName)
         {
             return await _userRepository.GetUserByNameAsync(userName);

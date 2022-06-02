@@ -5,25 +5,23 @@ namespace OpenAI.NET.Models.Api.Complete
     public class CompleteRequestParameters
     {
         [JsonIgnore]
-        public string Action
-        {
-            get => string.IsNullOrEmpty(_action) ? null : _action;
-            set => _action = value;
-        }
-        [JsonIgnore]
-        private string _action = string.Empty;
-
-        [JsonIgnore]
         public string Engine
         {
-            get => _engine switch
+            get
             {
-                "ada" => "text-ada-001",
-                "curie" => "text-curie-001",
-                "babbage" => "text-babbage-001",
-                "davinci" => "text-davinci-002",
-                _ => null
-            };
+                switch (_engine)
+                {
+                    case "ada": return "text-ada-001";
+                    case "curie": return "text-curie-001";
+                    case "babbage": return "text-babbage-001";
+                    case "davinci": return "text-davinci-002";
+                    case "text-ada-001": return "text-ada-001";
+                    case "text-curie-001": return "text-curie-001";
+                    case "text-babbage-001": return "text-babbage-001";
+                    case "text-davinci-002": return "text-davinci-002";
+                    default: return null;
+                }
+            }
             set => _engine = value?.ToLower();
         }
         [JsonIgnore]
