@@ -26,16 +26,25 @@ namespace OpenAI.NET.Lib
 
             Response response =
                 JsonConvert.DeserializeObject<Response>(await responseMessage.Content.ReadAsStringAsync());
-            
-            if (response.Exceptions is null)
+
+            if (responseMessage.IsSuccessStatusCode)
             {
-                CompleteResponseBody body =
-                    JsonConvert.DeserializeObject<CompleteResponseBody>(response.Body.ToString());
+                if (response.Exceptions is null)
+                {
+                    CompleteResponseBody body =
+                        JsonConvert.DeserializeObject<CompleteResponseBody>(response.Body.ToString());
 
-                return body.Completion;
+                    return body.Completion;
+                }
+                else
+                {
+                    throw LibHelper.GetException(response.Body.ToString(), response.Exceptions);
+                }
             }
-
-            throw LibHelper.GetException(response.Body.ToString(), response.Exceptions);
+            else
+            {
+                throw LibHelper.GetException(responseMessage.ReasonPhrase, null);
+            }
         }
     }
 }

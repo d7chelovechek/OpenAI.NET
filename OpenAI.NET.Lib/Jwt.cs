@@ -27,19 +27,28 @@ namespace OpenAI.NET.Lib
             Response response =
                 JsonConvert.DeserializeObject<Response>(await responseMessage.Content.ReadAsStringAsync());
 
-            if (response.Exceptions is null)
+            if (responseMessage.IsSuccessStatusCode)
             {
-                AuthResponseBody body =
-                    JsonConvert.DeserializeObject<AuthResponseBody>(response.Body.ToString());
+                if (response.Exceptions is null)
+                {
+                    AuthResponseBody body =
+                        JsonConvert.DeserializeObject<AuthResponseBody>(response.Body.ToString());
 
-                _client.DefaultRequestHeaders.Authorization = null;
-                _client.DefaultRequestHeaders
-                    .Add("Authorization", $"Bearer {body.AccessToken}");
+                    _client.DefaultRequestHeaders.Authorization = null;
+                    _client.DefaultRequestHeaders
+                        .Add("Authorization", $"Bearer {body.AccessToken}");
 
-                return body.AccessToken;
+                    return body.AccessToken;
+                }
+                else
+                {
+                    throw LibHelper.GetException(response.Body.ToString(), response.Exceptions);
+                }
             }
-
-            throw LibHelper.GetException(response.Body.ToString(), response.Exceptions);
+            else
+            {
+                throw LibHelper.GetException(responseMessage.ReasonPhrase, null);
+            }
         }
 
         public string Auth(string accessToken)
