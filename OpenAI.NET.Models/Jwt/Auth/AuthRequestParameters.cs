@@ -1,4 +1,4 @@
-﻿namespace OpenAI.NET.Web.Models.Jwt.Auth
+﻿namespace OpenAI.NET.Models.Jwt.Auth
 {
     public class AuthRequestParameters
     {

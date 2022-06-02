@@ -1,4 +1,4 @@
-﻿namespace OpenAI.NET.Web.Models
+﻿namespace OpenAI.NET.Models
 {
     public class Parameter
     {

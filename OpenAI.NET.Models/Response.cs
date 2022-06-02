@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace OpenAI.NET.Web.Models
+﻿namespace OpenAI.NET.Models
 {
     public class Response
     {
