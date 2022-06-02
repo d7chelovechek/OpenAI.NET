@@ -16,7 +16,10 @@ namespace OpenAI.NET.Lib.Services
 
                 if (!(value is null))
                 {
-                    content.Add(property.Name, value.ToString());
+                    content.Add(
+                        property.Name,
+                        (value is double) ?
+                            value.ToString().Replace(',', '.') : value.ToString());
                 }
             }
 
