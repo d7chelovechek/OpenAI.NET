@@ -1,4 +1,6 @@
-﻿namespace OpenAI.NET.Models
+﻿using System.Collections.Generic;
+
+namespace OpenAI.NET.Models
 {
     public class Response
     {
