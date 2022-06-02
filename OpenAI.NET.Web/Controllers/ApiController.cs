@@ -98,13 +98,20 @@ namespace OpenAI.NET.Web.Controllers
                     $"https://api.openai.com/v1/engines/{request.Engine}/completions",
                     new StringContent(parameters, Encoding.UTF8, "application/json"));
 
-            byte[] bytes = await responseMessage.Content.ReadAsByteArrayAsync();
+            if (responseMessage.IsSuccessStatusCode)
+            {
+                byte[] bytes = await responseMessage.Content.ReadAsByteArrayAsync();
 
-            return JObject.Parse(Encoding.UTF8.GetString(bytes))
-                 .SelectToken("choices[0].text")
-                 .ToString()
-                 .TrimStart('\n')
-                 .TrimEnd('\n');
+                return JObject.Parse(Encoding.UTF8.GetString(bytes))
+                     .SelectToken("choices[0].text")
+                     .ToString()
+                     .TrimStart('\n')
+                     .TrimEnd('\n');
+            }
+            else
+            {
+                throw new Exception(responseMessage.ReasonPhrase);
+            }
         }
     }
 }

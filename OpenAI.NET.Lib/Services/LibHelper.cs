@@ -28,12 +28,17 @@ namespace OpenAI.NET.Lib.Services
 
         public static Exception GetException(string body, List<string> exceptions)
         {
-            string message = body + ": ";
-            foreach (string exception in exceptions)
+            string message = body;
+
+            if (!(exceptions is null))
             {
-                message += exception + "; ";
+                message += ": ";
+                foreach (string exception in exceptions)
+                {
+                    message += exception + "; ";
+                }
+                message = message.TrimEnd(' ', ';');
             }
-            message = message.TrimEnd(' ', ';');
 
             return new Exception(message);
         }
