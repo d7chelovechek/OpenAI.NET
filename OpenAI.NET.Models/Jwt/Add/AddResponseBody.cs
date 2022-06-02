@@ -1,9 +1,11 @@
-﻿namespace OpenAI.NET.Web.Models.Jwt.Add
+﻿using System;
+
+namespace OpenAI.NET.Models.Jwt.Add
 {
-    public class AddRequestParameters
+    public class AddResponseBody
     {
+        public Guid Id { get; set; }
         public string Name { get; set; }
-        public string Password { get; set; }
         public string[] Permissions { get; set; }
         public string TokenLifeTime { get; set; }
     }

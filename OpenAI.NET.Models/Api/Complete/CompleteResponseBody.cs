@@ -1,4 +1,4 @@
-﻿namespace OpenAI.NET.Web.Models.Api.Complete
+﻿namespace OpenAI.NET.Models.Api.Complete
 {
     public class CompleteResponseBody
     {

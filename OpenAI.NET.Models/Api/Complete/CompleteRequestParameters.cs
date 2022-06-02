@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace OpenAI.NET.Web.Models.Api.Complete
+namespace OpenAI.NET.Models.Api.Complete
 {
     public class CompleteRequestParameters
     {
@@ -11,7 +11,7 @@ namespace OpenAI.NET.Web.Models.Api.Complete
             set => _action = value;
         }
         [JsonIgnore]
-        private string _action;
+        private string _action = string.Empty;
 
         [JsonIgnore]
         public string Engine
@@ -27,7 +27,7 @@ namespace OpenAI.NET.Web.Models.Api.Complete
             set => _engine = value?.ToLower();
         }
         [JsonIgnore]
-        private string _engine;
+        private string _engine = string.Empty;
 
         [JsonProperty("prompt")]
         public string Prompt
@@ -36,7 +36,7 @@ namespace OpenAI.NET.Web.Models.Api.Complete
             set => _prompt = value;
         }
         [JsonIgnore]
-        private string _prompt;
+        private string _prompt = string.Empty;
 
         [JsonProperty("temperature")]
         public double Temperature

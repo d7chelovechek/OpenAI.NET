@@ -1,4 +1,4 @@
-﻿namespace OpenAI.NET.Web.Models.Jwt.Remove
+﻿namespace OpenAI.NET.Models.Jwt.Remove
 {
     public class RemoveRequestParameters
     {

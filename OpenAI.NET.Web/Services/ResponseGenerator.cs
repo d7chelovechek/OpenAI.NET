@@ -1,4 +1,4 @@
-﻿using OpenAI.NET.Web.Models;
+﻿using OpenAI.NET.Models;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
