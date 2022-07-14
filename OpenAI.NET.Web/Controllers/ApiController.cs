@@ -7,6 +7,8 @@ using OpenAI.NET.Models;
 using OpenAI.NET.Models.Api.Complete;
 using OpenAI.NET.Web.EntityFrameworkCore.Models;
 using OpenAI.NET.Web.Services;
+using OpenAI.NET.Web.Translators;
+using OpenAI.NET.Web.Translators.Interfaces;
 using System;
 using System.Net.Http;
 using System.Text;
@@ -19,6 +21,7 @@ namespace OpenAI.NET.Web.Controllers
         private readonly IConfiguration _configuration;
 
         private readonly HttpClient _client;
+        private readonly ITranslator _translator;
 
         public ApiController(IConfiguration configuration)
         {
@@ -31,6 +34,8 @@ namespace OpenAI.NET.Web.Controllers
                 .Add("OpenAI-Organization", $"{_configuration["OpenAI:OrganizationKey"]}");
             _client.DefaultRequestHeaders
                 .Add("User-Agent", "dotnet_openai_api");
+
+            _translator = new GoogleTranslator();
         }
 
         [HttpPost, Route("/Api/Complete"), Authorize(Roles = Permission.CanCallApi)]
@@ -58,7 +63,13 @@ namespace OpenAI.NET.Web.Controllers
 
             try
             {
-                message = await TryExecuteCompletionsAsync(request);
+                request.Prompt = await _translator.TranslateIntoEnglish(
+                    request.Prompt,
+                    request.Language);
+
+                message = await _translator.TranslateFromEnglish(
+                    await TryExecuteCompletionsAsync(request),
+                    request.Language);
             }
             catch (Exception ex)
             {
@@ -76,7 +87,7 @@ namespace OpenAI.NET.Web.Controllers
 
             response.Body = new CompleteResponseBody()
             {
-                Completion = message
+                Completion = message.TrimStart('\n').TrimEnd('\n')
             };
 
             return Content(JsonConvert.SerializeObject(
@@ -104,9 +115,7 @@ namespace OpenAI.NET.Web.Controllers
 
                 return JObject.Parse(Encoding.UTF8.GetString(bytes))
                      .SelectToken("choices[0].text")
-                     .ToString()
-                     .TrimStart('\n')
-                     .TrimEnd('\n');
+                     .ToString();
             }
             else
             {

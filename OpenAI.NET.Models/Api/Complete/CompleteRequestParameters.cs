@@ -36,6 +36,15 @@ namespace OpenAI.NET.Models.Api.Complete
         [JsonIgnore]
         private string _prompt = string.Empty;
 
+        [JsonIgnore]
+        public string Language
+        {
+            get => string.IsNullOrEmpty(_language) ? null : _language;
+            set => _language = value?.ToLower();
+        }
+        [JsonIgnore]
+        private string _language = "en";
+
         [JsonProperty("temperature")]
         public double Temperature
         {
