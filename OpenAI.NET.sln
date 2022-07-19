@@ -10,9 +10,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.editorconfig = .editorconfig
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenAI.NET.Models", "OpenAI.NET.Models\OpenAI.NET.Models.csproj", "{0961C7B0-001F-4914-9D3A-A295E0EB1A9D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenAI.NET.Models", "OpenAI.NET.Models\OpenAI.NET.Models.csproj", "{0961C7B0-001F-4914-9D3A-A295E0EB1A9D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenAI.NET.Lib", "OpenAI.NET.Lib\OpenAI.NET.Lib.csproj", "{59EFBFE4-D97A-4E7E-8CBA-C74C09449EAE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenAI.NET.Lib", "OpenAI.NET.Lib\OpenAI.NET.Lib.csproj", "{59EFBFE4-D97A-4E7E-8CBA-C74C09449EAE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

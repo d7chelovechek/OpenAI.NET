@@ -1,15 +1,25 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using OpenAI.NET.Web.Services;
-using OpenAI.NET.Web.EntityFrameworkCore.Models;
 using System;
+using OpenAI.NET.Web.EntityFrameworkCore.Entities;
+using OpenAI.NET.Web.Cryptography;
+using OpenAI.NET.Models.Web;
 
 namespace OpenAI.NET.Web.EntityFrameworkCore
 {
-    public class ApiDbContext : DbContext
+    /// <summary>
+    /// Database context.
+    /// </summary>
+    public class AppDbContext : DbContext
     {
+        /// <summary>
+        /// All users in database.
+        /// </summary>
         public DbSet<User> Users { get; set; }
 
-        public ApiDbContext(DbContextOptions<ApiDbContext> options) : base(options)
+        /// <summary>
+        /// A constructor that initializes database.
+        /// </summary>
+        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
             SQLitePCL.Batteries_V2.Init();
             Database.EnsureCreated();
@@ -17,13 +27,14 @@ namespace OpenAI.NET.Web.EntityFrameworkCore
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<User>().HasKey(e => e.Name);
+
             modelBuilder.Entity<User>().Property(e => e.Permissions).HasConversion(
                 x => string.Join(',', x),
                 x => x.Split(',', StringSplitOptions.RemoveEmptyEntries));
 
             modelBuilder.Entity<User>().HasData(new User()
             {
-                Id = Guid.NewGuid(),
                 Name = "Ayrat",
                 PasswordHash = Sha256.GetHash("p455w9"),
                 Permissions = new string[] { Permission.All },

@@ -1,25 +1,33 @@
-﻿using OpenAI.NET.Models;
+﻿using OpenAI.NET.Models.Response;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
 
-namespace OpenAI.NET.Web.Services
+namespace OpenAI.NET.Web.Builders
 {
-    public class ResponseBuilder
+    /// <summary>
+    /// Builder to build response.
+    /// </summary>
+    public class ResponseBuilder<T>
     {
         private readonly Response _response;
 
-        private readonly Type _type;
-        private readonly object _instance;
+        private readonly T _request;
 
-        public ResponseBuilder(Type type, object instance)
+        /// <summary>
+        /// A constructor that initializes all fields.
+        /// </summary>
+        public ResponseBuilder(T request)
         {
             _response = new Response();
 
-            _type = type;
-            _instance = instance;
+            _request = request;
         }
 
+        /// <summary>
+        /// Building response.
+        /// </summary>
+        /// <returns>Builded response.</returns>
         public Response Build()
         {
             CheckParameters();
@@ -27,11 +35,15 @@ namespace OpenAI.NET.Web.Services
             return _response;
         }
 
+        /// <summary>
+        /// Checking all request parameters.
+        /// </summary>
         private void CheckParameters()
         {
-            foreach (PropertyInfo property in _type.GetProperties())
+            foreach (PropertyInfo property in
+                _request.GetType().GetProperties())
             {
-                object value = property.GetValue(_instance);
+                object value = property.GetValue(_request);
 
                 if (value is Array array)
                 {
@@ -47,7 +59,12 @@ namespace OpenAI.NET.Web.Services
             }
         }
 
-        private void CheckParameter(PropertyInfo property, object value)
+        /// <summary>
+        /// Checking request parameter.
+        /// </summary>
+        private void CheckParameter(
+            PropertyInfo property,
+            object value)
         {
             try
             {
@@ -63,19 +80,27 @@ namespace OpenAI.NET.Web.Services
                 }
                 else
                 {
-                    throw new Exception($"Parameter {property.Name} can not be empty or null");
+                    throw new Exception(
+                        $"Parameter {property.Name} " +
+                        $"can not be empty or null");
                 }
             }
             catch (Exception ex)
             {
                 AddException(
                     "Exception in parameters checking:" +
-                    " one or more of the specified parameters was missing or invalid",
+                    " one or more of specified" +
+                    " parameters was missing or invalid",
                     ex.Message);
             }
         }
 
-        public void AddException(string exceptionBody, string exceptionMessage)
+        /// <summary>
+        /// Adding an exception to response.
+        /// </summary>
+        public void AddException(
+            string exceptionBody,
+            string exceptionMessage)
         {
             if (_response.Body is null)
             {
