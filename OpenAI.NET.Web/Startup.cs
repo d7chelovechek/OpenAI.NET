@@ -14,27 +14,33 @@ using System.Text;
 
 namespace OpenAI.NET.Web
 {
+    /// <summary>
+    /// A class that configuring application.
+    /// </summary>
     public class Startup
     {
         private readonly IConfiguration _configuration;
 
+        /// <summary>
+        /// A constructor that initializes all fields.
+        /// </summary>
         public Startup(IConfiguration configuration)
         {
             _configuration = configuration;
         }
 
+        /// <summary>
+        /// Setting up services for applications.
+        /// </summary>
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
 
-            services.AddTransient(ツ =>
+            services.AddDbContext<AppDbContext>(options =>
             {
-                DbContextOptionsBuilder<ApiDbContext> optionsBuilder = new();
-                optionsBuilder
-                    .UseSqlite($"Filename={Path.GetDirectoryName(Environment.ProcessPath)}/" +
+                options.UseSqlite($"Filename=" +
+                    $"{Path.GetDirectoryName(Environment.ProcessPath)}/" +
                     $"{_configuration["Database"]}");
-
-                return new ApiDbContext(optionsBuilder.Options);
             });
             services.AddTransient<UserRepository>();
 
@@ -48,12 +54,18 @@ namespace OpenAI.NET.Web
                     ValidateAudience = true,
                     ValidAudience = _configuration["Jwt:Audience"],
                     ValidIssuer = _configuration["Jwt:Issuer"],
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"])),
+                    IssuerSigningKey =
+                        new SymmetricSecurityKey(
+                            Encoding.UTF8.GetBytes(
+                                _configuration["Jwt:Key"])),
                     ClockSkew = new TimeSpan(0),
                 };
             });
         }
 
+        /// <summary>
+        /// Configuring request processing.
+        /// </summary>
         public void Configure(
             IApplicationBuilder app,
             IWebHostEnvironment env)

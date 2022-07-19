@@ -4,70 +4,96 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using System.Collections.Generic;
+using Microsoft.Extensions.Configuration;
 
 namespace OpenAI.NET.Web.Translators
 {
+    /// <summary>
+    /// Google translate implementation.
+    /// </summary>
     public class GoogleTranslator : ITranslator
     {
         private const string _mainLanguage = "en";
 
         private readonly HttpClient _client;
 
-        public GoogleTranslator()
+        /// <summary>
+        /// A constructor that initializes all fields.
+        /// </summary>
+        public GoogleTranslator(
+            IConfiguration configuration)
         {
-            _client = new HttpClient();
+            string host = configuration["TranslatorsUri:Google"];
+            _client = new HttpClient()
+            {
+                BaseAddress =
+                    new Uri(host.EndsWith('/') ? host : host + "/"),
+            };
         }
 
-        public async Task<string> TranslateFromEnglish(string text, string language)
+        public async Task<string> TranslateFromEnglishAsync(
+            string text,
+            string language)
         {
             try
             {
                 if (language is not _mainLanguage)
                 {
-                    string response = await _client.GetStringAsync(
-                        $"https://translate.googleapis.com/translate_a/single?" +
-                        $"client=gtx&sl={_mainLanguage}&tl={language}&dt=t&q={Uri.EscapeDataString(text)}");
-
-                    response = response.Replace($"\"{_mainLanguage}\",", "");
-
-                    return JsonConvert.DeserializeObject<List<List<List<dynamic>>>>(
-                        response)[0][0][0].ToString();
+                    text = await TranslateAsync(
+                        text,
+                        _mainLanguage,
+                        language);
                 }
-                else
-                {
-                    return text;
-                }
+
+                return text;
             }
             catch
             {
-                throw new Exception("Failed to translate text from English");
+                throw new Exception(
+                    "Failed to translate text from English");
             }
         }
 
-        public async Task<string> TranslateIntoEnglish(string text, string language)
+        public async Task<string> TranslateIntoEnglishAsync(
+            string text,
+            string language)
         {
             try
             {
                 if (language is not _mainLanguage)
                 {
-                    string response = await _client.GetStringAsync(
-                        $"https://translate.googleapis.com/translate_a/single?" +
-                        $"client=gtx&sl={language}&tl={_mainLanguage}&dt=t&q={Uri.EscapeDataString(text)}");
-
-                    response = response.Replace($"\"{language}\",", "");
-
-                    return JsonConvert.DeserializeObject<List<List<List<dynamic>>>>(
-                        response)[0][0][0].ToString();
+                    text = await TranslateAsync(
+                        text,
+                        language,
+                        _mainLanguage);
                 }
-                else
-                {
-                    return text;
-                }
+
+                return text;
             }
             catch
             {
-                throw new Exception("Failed to translate text into English");
+                throw new Exception(
+                    "Failed to translate text into English");
             }
+        }
+
+        /// <summary>
+        /// Async sending a request to a translator.
+        /// </summary>
+        /// <returns>Translated text</returns>
+        private async Task<string> TranslateAsync(
+            string text,
+            string fromLanguage,
+            string intoLanguage)
+        {
+            string response = await _client.GetStringAsync(
+                $"single?client=gtx&sl={fromLanguage}&tl={intoLanguage}&" +
+                $"dt=t&q={Uri.EscapeDataString(text)}");
+
+            response = response.Replace($"\"{fromLanguage}\",", "");
+
+            return JsonConvert.DeserializeObject<List<List<List<dynamic>>>>(
+                response)[0][0][0].ToString();
         }
     }
 }

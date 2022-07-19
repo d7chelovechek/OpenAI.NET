@@ -2,10 +2,17 @@
 using System.Security.Cryptography;
 using System.Text;
 
-namespace OpenAI.NET.Web.Services
+namespace OpenAI.NET.Web.Cryptography
 {
+    /// <summary>
+    /// Sha256 generator.
+    /// </summary>
     public class Sha256
     {
+        /// <summary>
+        /// Creating a hash from a string.
+        /// </summary>
+        /// <returns>Sha256 hash</returns>
         public static string GetHash(string value)
         {
             using (SHA256 algorithm = SHA256.Create())

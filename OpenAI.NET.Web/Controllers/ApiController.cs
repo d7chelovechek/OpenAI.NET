@@ -3,91 +3,101 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using OpenAI.NET.Models;
 using OpenAI.NET.Models.Api.Complete;
-using OpenAI.NET.Web.EntityFrameworkCore.Models;
-using OpenAI.NET.Web.Services;
+using OpenAI.NET.Models.Response;
+using OpenAI.NET.Models.Web;
+using OpenAI.NET.Web.Controllers.Interfaces;
 using OpenAI.NET.Web.Translators;
 using OpenAI.NET.Web.Translators.Interfaces;
 using System;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace OpenAI.NET.Web.Controllers
 {
-    public class ApiController : Controller
+    /// <summary>
+    /// Api controller for work with OpenAI.Api.
+    /// </summary>
+    public class ApiController : BaseController, IApiController
     {
-        private readonly IConfiguration _configuration;
-
         private readonly HttpClient _client;
         private readonly ITranslator _translator;
 
+        /// <summary>
+        /// A constructor that initializes all fields.
+        /// </summary>
         public ApiController(IConfiguration configuration)
         {
-            _configuration = configuration;
+            _client = InitHttpClient(configuration);
 
-            _client = new HttpClient();
-            _client.DefaultRequestHeaders
-                .Add("Authorization", $"Bearer {_configuration["OpenAI:SecretKey"]}");
-            _client.DefaultRequestHeaders
-                .Add("OpenAI-Organization", $"{_configuration["OpenAI:OrganizationKey"]}");
-            _client.DefaultRequestHeaders
-                .Add("User-Agent", "dotnet_openai_api");
-
-            _translator = new GoogleTranslator();
+            _translator = new GoogleTranslator(
+                configuration);
         }
 
-        [HttpPost, Route("/Api/Complete"), Authorize(Roles = Permission.CanCallApi)]
+        /// <summary>
+        /// Initialization of HttpClient.
+        /// </summary>
+        /// <returns>Initiated HttpClient.</returns>
+        private static HttpClient InitHttpClient(
+            IConfiguration configuration)
+        {
+            string host = configuration["OpenAI:Uri"];
+            HttpClient client = new()
+            {
+                BaseAddress =
+                    new Uri(host.EndsWith('/') ? host : host + "/")
+            };
+            
+            client.DefaultRequestHeaders.Authorization =
+                new AuthenticationHeaderValue(
+                    "Bearer",
+                    configuration["OpenAI:SecretKey"]);
+            client.DefaultRequestHeaders.Add(
+                "OpenAI-Organization",
+                $"{configuration["OpenAI:OrganizationKey"]}");
+            client.DefaultRequestHeaders.Add(
+                "User-Agent",
+                "dotnet_openai_api");
+
+            return client;
+        }
+
+        [HttpPost("/Api/Complete")] 
+        [Authorize(Roles = Permission.CanCallApi)]
         public async Task<IActionResult> CompleteAsync(
             CompleteRequestParameters request)
         {
-            return await BuildCompleteResponseAsync(request);
+            return await SendResponseAsync(
+                request,
+                InvokeCompleteAsync,
+                "Exception in using OpenAI API");
         }
 
+        /// <summary>
+        /// Async method that executing in
+        /// <see cref="BaseController.SendResponseAsync{T}(T, Action{T}, string)"/>.
+        /// </summary>
+        /// <returns>Json content with <see cref="CompleteResponseBody"/> body.</returns>
         [NonAction]
-        private async Task<IActionResult> BuildCompleteResponseAsync(
-            CompleteRequestParameters request)
+        private async Task<IActionResult> InvokeCompleteAsync(
+            CompleteRequestParameters request,
+            Response response)
         {
-            ResponseBuilder builder = new(typeof(CompleteRequestParameters), request);
-            Response response = builder.Build();
-
-            if (response.Exceptions is not null)
-            {
-                return BadRequest(JsonConvert.SerializeObject(
-                    response,
-                    Formatting.Indented));
-            }
-
-            string message = string.Empty;
-
-            try
-            {
-                request.Prompt = await _translator.TranslateIntoEnglish(
+            request.Prompt =
+                await _translator.TranslateIntoEnglishAsync(
                     request.Prompt,
-                    request.Language);
+                    request.RequestLanguage);
 
-                message = await _translator.TranslateFromEnglish(
+            string completion =
+                await _translator.TranslateFromEnglishAsync(
                     await TryExecuteCompletionsAsync(request),
-                    request.Language);
-            }
-            catch (Exception ex)
-            {
-                builder.AddException(
-                    "Exception in using OpenAI API",
-                    ex.Message);
-            }
-
-            if (response.Exceptions is not null)
-            {
-                return BadRequest(JsonConvert.SerializeObject(
-                    response,
-                    Formatting.Indented));
-            }
+                    request.ResponseLanguage);
 
             response.Body = new CompleteResponseBody()
             {
-                Completion = message.TrimStart('\n').TrimEnd('\n')
+                Completion = completion.TrimStart('\n').TrimEnd('\n')
             };
 
             return Content(JsonConvert.SerializeObject(
@@ -95,8 +105,13 @@ namespace OpenAI.NET.Web.Controllers
                 Formatting.Indented));
         }
 
+        /// <summary>
+        /// Async sending a request to OpenAI.Api.
+        /// </summary>
+        /// <returns>Completion.</returns>
         [NonAction]
-        private async Task<string> TryExecuteCompletionsAsync(CompleteRequestParameters request)
+        private async Task<string> TryExecuteCompletionsAsync(
+            CompleteRequestParameters request)
         {
             string parameters = JsonConvert
                 .SerializeObject(request, new JsonSerializerSettings()
@@ -106,12 +121,16 @@ namespace OpenAI.NET.Web.Controllers
 
             HttpResponseMessage responseMessage =
                 await _client.PostAsync(
-                    $"https://api.openai.com/v1/engines/{request.Engine}/completions",
-                    new StringContent(parameters, Encoding.UTF8, "application/json"));
+                    $"{request.Engine}/completions",
+                    new StringContent(
+                        parameters,
+                        Encoding.UTF8,
+                        "application/json"));
 
             if (responseMessage.IsSuccessStatusCode)
             {
-                byte[] bytes = await responseMessage.Content.ReadAsByteArrayAsync();
+                byte[] bytes =
+                    await responseMessage.Content.ReadAsByteArrayAsync();
 
                 return JObject.Parse(Encoding.UTF8.GetString(bytes))
                      .SelectToken("choices[0].text")
