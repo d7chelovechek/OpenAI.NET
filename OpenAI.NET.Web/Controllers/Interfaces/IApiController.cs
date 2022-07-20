@@ -14,6 +14,6 @@ namespace OpenAI.NET.Web.Controllers.Interfaces
         /// </summary>
         /// <returns>Json content.</returns>
         public Task<IActionResult> CompleteAsync(
-            CompleteRequestParameters request);
+            CompleteRequest request);
     }
 }

@@ -3,6 +3,7 @@ using System;
 using OpenAI.NET.Web.EntityFrameworkCore.Entities;
 using OpenAI.NET.Web.Cryptography;
 using OpenAI.NET.Models.Web;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace OpenAI.NET.Web.EntityFrameworkCore
 {

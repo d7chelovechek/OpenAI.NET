@@ -20,8 +20,8 @@ namespace OpenAI.NET.Lib.Controllers
             _client = client;
         }
 
-        public async Task<string> AuthAsync(
-            AuthRequestParameters request)
+        public async Task<AuthResponse> AuthAsync(
+            AuthRequest request)
         {
             HttpResponseMessage responseMessage =
                 await _client.HttpClient.PostAsync(
@@ -29,27 +29,16 @@ namespace OpenAI.NET.Lib.Controllers
                     new FormUrlEncodedContent(
                         GetContent(request)));
 
-            object result =
-                await DeserializeResponseAsync<AuthResponseBody>(
-                    responseMessage,
-                    GetAccessToken);
+            AuthResponse response =
+                await DeserializeResponseAsync<AuthResponse>(
+                    responseMessage);
 
-            return result.ToString();
-        }
-
-        /// <summary>
-        /// Method that executing in
-        /// <see cref="BaseController.DeserializeResponseAsync{T}(HttpResponseMessage, Action{T})"/>.
-        /// </summary>
-        /// <returns>AccessToken</returns>
-        private string GetAccessToken(AuthResponseBody response)
-        {
             _client.AddAuthorizationHeader(response.AccessToken);
 
-            return response.AccessToken;
+            return response;
         }
 
-        public string Auth(AuthRequestParameters request)
+        public AuthResponse Auth(AuthRequest request)
         {
             return AuthAsync(request).GetAwaiter().GetResult();
         }

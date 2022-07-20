@@ -3,9 +3,9 @@
 namespace OpenAI.NET.Models.Api.Complete
 {
     /// <summary>
-    /// Parameters for sending a request to Complete action.
+    /// Complete action request body.
     /// </summary>
-    public class CompleteRequestParameters
+    public class CompleteRequest
     {
         /// <summary>
         /// Model which will generate completion.
@@ -61,7 +61,7 @@ namespace OpenAI.NET.Models.Api.Complete
         private string _requestLanguage = "en";
 
         /// <summary>
-        /// <see cref="CompleteResponseBody.Completion"/>'s language.
+        /// <see cref="CompleteResponse.Completion"/>'s language.
         /// </summary>
         [JsonIgnore]
         public string ResponseLanguage

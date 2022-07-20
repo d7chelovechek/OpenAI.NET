@@ -16,7 +16,7 @@ namespace OpenAI.NET.Web.Controllers
         /// Receive result of request.
         /// </summary>
         /// <returns>Json content</returns>
-        internal delegate Task<IActionResult> Action<T>(
+        public delegate Task<IActionResult> Action<T>(
             T request,
             Response response);
 
@@ -24,7 +24,7 @@ namespace OpenAI.NET.Web.Controllers
         /// Async processing a request and sending a response.
         /// </summary>
         /// <returns>Json content.</returns>
-        internal async Task<IActionResult> SendResponseAsync<T>(
+        public async Task<IActionResult> SendResponseAsync<T>(
             T request,
             Action<T> action,
             string exceptionTitle)
@@ -34,7 +34,7 @@ namespace OpenAI.NET.Web.Controllers
 
             if (response.Exceptions is not null)
             {
-                return BadRequest(
+                return Content(
                     JsonConvert.SerializeObject(response,
                     Formatting.Indented));
             }
@@ -49,7 +49,7 @@ namespace OpenAI.NET.Web.Controllers
                     exceptionTitle,
                     ex.Message);
 
-                return BadRequest(JsonConvert.SerializeObject(
+                return Content(JsonConvert.SerializeObject(
                     response,
                     Formatting.Indented));
             }

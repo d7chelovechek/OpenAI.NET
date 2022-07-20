@@ -16,7 +16,7 @@ namespace OpenAI.NET.Web.Translators.Interfaces
         /// <summary>
         /// Async translation of text from English.
         /// </summary>
-        /// <returns>Text in <see cref="CompleteRequestParameters.ResponseLanguage"/> language</returns>
+        /// <returns>Text in <see cref="CompleteRequest.ResponseLanguage"/> language</returns>
         public Task<string> TranslateFromEnglishAsync(string text, string language);
     }
 }
