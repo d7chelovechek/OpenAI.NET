@@ -1,9 +1,9 @@
 ﻿namespace OpenAI.NET.Models.Jwt.Remove
 {
     /// <summary>
-    /// Parameters for sending a request to Remove action.
+    /// Remove action request body.
     /// </summary>
-    public class RemoveRequestParameters
+    public class RemoveRequest
     {
         /// <summary>
         /// User name.

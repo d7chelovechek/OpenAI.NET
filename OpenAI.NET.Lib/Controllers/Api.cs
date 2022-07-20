@@ -20,8 +20,8 @@ namespace OpenAI.NET.Lib.Controllers
             _client = client;
         }
         
-        public async Task<string> CompleteAsync(
-            CompleteRequestParameters request)
+        public async Task<CompleteResponse> CompleteAsync(
+            CompleteRequest request)
         {
             HttpResponseMessage responseMessage =
                 await _client.HttpClient.PostAsync(
@@ -29,22 +29,17 @@ namespace OpenAI.NET.Lib.Controllers
                     new FormUrlEncodedContent(
                         GetContent(request)));
 
-            object result =
-                await DeserializeResponseAsync<CompleteResponseBody>(
-                    responseMessage,
-                    GetCompletion);
+            CompleteResponse response =
+                await DeserializeResponseAsync<CompleteResponse>(
+                    responseMessage);
 
-            return result.ToString();
+            return response;
         }
 
-        /// <summary>
-        /// Method that executing in
-        /// <see cref="BaseController.DeserializeResponseAsync{T}(HttpResponseMessage, Action{T})"/>.
-        /// </summary>
-        /// <returns>Completion</returns>
-        private string GetCompletion(CompleteResponseBody response)
+        public CompleteResponse Complete(
+            CompleteRequest request)
         {
-            return response.Completion;
+            return CompleteAsync(request).GetAwaiter().GetResult();
         }
     }
 }

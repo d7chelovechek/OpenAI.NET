@@ -16,18 +16,18 @@ namespace OpenAI.NET.Web.Controllers.Interfaces
         /// </summary>
         /// <returns>Json content.</returns>
         public Task<IActionResult> AuthAsync(
-            AuthRequestParameters request);
+            AuthRequest request);
         /// <summary>
         /// Async adding new user in OpenAI.NET.Web.
         /// </summary>
         /// <returns>Json content.</returns>
         public Task<IActionResult> AddAsync(
-            AddRequestParameters request);
+            AddRequest request);
         /// <summary>
         /// Async removing user from OpenAI.NET.Web.
         /// </summary>
         /// <returns>Json content.</returns>
         public Task<IActionResult> RemoveAsync(
-            RemoveRequestParameters request);
+            RemoveRequest request);
     }
 }

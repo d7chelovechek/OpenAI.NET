@@ -1,9 +1,9 @@
 ﻿namespace OpenAI.NET.Models.Api.Complete
 {
     /// <summary>
-    /// Body received after calling Complete action.
+    /// Complete action response body.
     /// </summary>
-    public class CompleteResponseBody
+    public class CompleteResponse
     {
         /// <summary>
         /// Сontinued text.

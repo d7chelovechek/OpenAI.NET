@@ -11,15 +11,15 @@ namespace OpenAI.NET.Lib.Controllers.Interfaces
         /// <summary>
         /// Async authorization in OpenAI.NET.Web.
         /// </summary>
-        /// <returns>AccessToken</returns>
-        public Task<string> AuthAsync(AuthRequestParameters parameters);
+        /// <returns>AuthResponse body.</returns>
+        public Task<AuthResponse> AuthAsync(AuthRequest request);
         /// <summary>
         /// Authorization in OpenAI.NET.Web.
         /// </summary>
-        /// <returns>AccessToken</returns>
-        public string Auth(AuthRequestParameters parameters);
+        /// <returns>AuthResponse body.</returns>
+        public AuthResponse Auth(AuthRequest request);
         /// <summary>
-        /// Authorization in OpenAI.NET.Web by AccessToken.
+        /// Authorization in OpenAI.NET.Web by access token.
         /// </summary>
         public void Auth(string accessToken);
     }

@@ -15,13 +15,6 @@ namespace OpenAI.NET.Lib.Controllers
     public class BaseController
     {
         /// <summary>
-        /// Receive result of request.
-        /// </summary>
-        /// <returns>Response body object.</returns>
-        internal delegate object Action<T>(
-            T response);
-
-        /// <summary>
         /// Creating a dictionary of parameters to send a request to OpenAI.NET.Web.
         /// </summary>
         /// <returns>Parameters Dictionary.</returns>
@@ -73,10 +66,9 @@ namespace OpenAI.NET.Lib.Controllers
         /// <summary>
         /// Async deserializing response from OpenAI.NET.Web.
         /// </summary>
-        /// <returns>Returns response body object from OpenAI.NET.Web.</returns>
-        internal static async Task<object> DeserializeResponseAsync<T>(
-            HttpResponseMessage responseMessage,
-            Action<T> action)
+        /// <returns>Returns response body from OpenAI.NET.Web.</returns>
+        internal static async Task<T> DeserializeResponseAsync<T>(
+            HttpResponseMessage responseMessage)
         {
             Response response =
                 JsonConvert.DeserializeObject<Response>(
@@ -86,7 +78,8 @@ namespace OpenAI.NET.Lib.Controllers
             {
                 if (response.Exceptions is null)
                 {
-                    return action.Invoke((T)response.Body);
+                    return JsonConvert.DeserializeObject<T>(
+                        response.Body.ToString());
                 }
                 else
                 {

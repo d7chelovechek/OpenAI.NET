@@ -11,8 +11,14 @@ namespace OpenAI.NET.Lib.Controllers.Interfaces
         /// <summary>
         /// Async completing text by OpenAI.NET.Web.
         /// </summary>
-        /// <returns>Completion</returns>
-        public Task<string> CompleteAsync(
-            CompleteRequestParameters parameters);
+        /// <returns>CompleteResponse body.</returns>
+        public Task<CompleteResponse> CompleteAsync(
+            CompleteRequest request);
+        /// <summary>
+        /// Completing text by OpenAI.NET.Web.
+        /// </summary>
+        /// <returns>CompleteResponse body.</returns>
+        public CompleteResponse Complete(
+            CompleteRequest request);
     }
 }

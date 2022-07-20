@@ -1,9 +1,9 @@
 ﻿namespace OpenAI.NET.Models.Jwt.Auth
 {
     /// <summary>
-    /// Parameters for sending a request to Auth action.
+    /// Auth action request body.
     /// </summary>
-    public class AuthRequestParameters
+    public class AuthRequest
     {
         /// <summary>
         /// User name.

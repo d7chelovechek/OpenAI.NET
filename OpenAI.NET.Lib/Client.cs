@@ -33,7 +33,7 @@ namespace OpenAI.NET.Lib
         private string _address;
 
         /// <summary>
-        /// Token for authorization in OpenAI.NET.Web.
+        /// Access token for authorization in OpenAI.NET.Web.
         /// </summary>
         public string AccessToken { get; private set; }
 
@@ -49,13 +49,13 @@ namespace OpenAI.NET.Lib
         /// <summary>
         /// A constructor that initializes all factory properties.
         /// </summary>
-        public Client(string host)
+        public Client(string address)
         {
             HttpClient = new HttpClient();
             HttpClient.DefaultRequestHeaders
                 .Add("User-Agent", "OpenAI.NET-Client");
 
-            Address = host;
+            Address = address;
 
             Jwt = new Jwt(this);
             Api = new Api(this);

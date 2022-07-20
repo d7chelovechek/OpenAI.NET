@@ -46,7 +46,7 @@ namespace OpenAI.NET.Web.Controllers
         [HttpPost("/Jwt/Auth")]
         [AllowAnonymous]
         public async Task<IActionResult> AuthAsync(
-            AuthRequestParameters request)
+            AuthRequest request)
         {
             return await SendResponseAsync(
                 request,
@@ -57,7 +57,7 @@ namespace OpenAI.NET.Web.Controllers
         [HttpPost("/Jwt/Add")]
         [Authorize(Roles = Permission.CanManageUsers)]
         public async Task<IActionResult> AddAsync(
-            AddRequestParameters request)
+            AddRequest request)
         {
             return await SendResponseAsync(
                 request,
@@ -68,7 +68,7 @@ namespace OpenAI.NET.Web.Controllers
         [HttpPost("/Jwt/Remove")]
         [Authorize(Roles = Permission.CanManageUsers)]
         public async Task<IActionResult> RemoveAsync(
-            RemoveRequestParameters request)
+            RemoveRequest request)
         {
             return await SendResponseAsync(
                 request,
@@ -80,10 +80,10 @@ namespace OpenAI.NET.Web.Controllers
         /// Async method that executing in
         /// <see cref="BaseController.SendResponseAsync{T}(T, Action{T}, string)"/>.
         /// </summary>
-        /// <returns>Json content with <see cref="AuthResponseBody"/> body</returns>
+        /// <returns>Json content with <see cref="AuthResponse"/> body</returns>
         [NonAction]
         private async Task<IActionResult> InvokeAuthAsync(
-            AuthRequestParameters request,
+            AuthRequest request,
             Response response)
         {
             if (await GetClaimsIdentityAsync(request) is
@@ -103,7 +103,7 @@ namespace OpenAI.NET.Web.Controllers
                                 _configuration["Jwt:Key"])),
                         SecurityAlgorithms.HmacSha256));
 
-                response.Body = new AuthResponseBody()
+                response.Body = new AuthResponse()
                 {
                     Name = identity.Item1.Name,
                     Permissions = identity.Item2.Permissions,
@@ -128,10 +128,10 @@ namespace OpenAI.NET.Web.Controllers
         /// Async method that executing in
         /// <see cref="BaseController.SendResponseAsync{T}(T, Action{T}, string)"/>.
         /// </summary>
-        /// <returns>Json content with <see cref="AddResponseBody"/> body</returns>
+        /// <returns>Json content with <see cref="AddResponse"/> body</returns>
         [NonAction]
         private async Task<IActionResult> InvokeAddAsync(
-            AddRequestParameters request,
+            AddRequest request,
             Response response)
         {
             if (await _userRepository.GetUserByNameAsync(request.Name) is null)
@@ -152,7 +152,7 @@ namespace OpenAI.NET.Web.Controllers
                 };
                 await _userRepository.AddAsync(user);
 
-                response.Body = new AddResponseBody()
+                response.Body = new AddResponse()
                 {
                     Name = user.Name,
                     Permissions = user.Permissions,
@@ -174,10 +174,10 @@ namespace OpenAI.NET.Web.Controllers
         /// Async method that executing in
         /// <see cref="BaseController.SendResponseAsync{T}(T, Action{T}, string)"/>.
         /// </summary>
-        /// <returns>Json content with <see cref="RemoveResponseBody"/> body</returns>
+        /// <returns>Json content with <see cref="RemoveResponse"/> body</returns>
         [NonAction]
         private async Task<IActionResult> InvokeRemoveAsync(
-            RemoveRequestParameters request,
+            RemoveRequest request,
             Response response)
         {
             if (await _userRepository.GetUserByNameAsync(request.Name) is
@@ -195,7 +195,7 @@ namespace OpenAI.NET.Web.Controllers
 
                 await _userRepository.RemoveAsync(user);
 
-                response.Body = new RemoveResponseBody()
+                response.Body = new RemoveResponse()
                 {
                     Name = user.Name
                 };
@@ -217,7 +217,7 @@ namespace OpenAI.NET.Web.Controllers
         /// <returns>Claims and user.</returns>
         [NonAction]
         private async Task<(ClaimsIdentity, User)> GetClaimsIdentityAsync(
-            AuthRequestParameters request)
+            AuthRequest request)
         {
             List<User> users = await _userRepository.GetAllAsync();
 

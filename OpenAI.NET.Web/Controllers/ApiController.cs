@@ -67,7 +67,7 @@ namespace OpenAI.NET.Web.Controllers
         [HttpPost("/Api/Complete")] 
         [Authorize(Roles = Permission.CanCallApi)]
         public async Task<IActionResult> CompleteAsync(
-            CompleteRequestParameters request)
+            CompleteRequest request)
         {
             return await SendResponseAsync(
                 request,
@@ -79,10 +79,10 @@ namespace OpenAI.NET.Web.Controllers
         /// Async method that executing in
         /// <see cref="BaseController.SendResponseAsync{T}(T, Action{T}, string)"/>.
         /// </summary>
-        /// <returns>Json content with <see cref="CompleteResponseBody"/> body.</returns>
+        /// <returns>Json content with <see cref="CompleteResponse"/> body.</returns>
         [NonAction]
         private async Task<IActionResult> InvokeCompleteAsync(
-            CompleteRequestParameters request,
+            CompleteRequest request,
             Response response)
         {
             request.Prompt =
@@ -95,7 +95,7 @@ namespace OpenAI.NET.Web.Controllers
                     await TryExecuteCompletionsAsync(request),
                     request.ResponseLanguage);
 
-            response.Body = new CompleteResponseBody()
+            response.Body = new CompleteResponse()
             {
                 Completion = completion.TrimStart('\n').TrimEnd('\n')
             };
@@ -111,9 +111,9 @@ namespace OpenAI.NET.Web.Controllers
         /// <returns>Completion.</returns>
         [NonAction]
         private async Task<string> TryExecuteCompletionsAsync(
-            CompleteRequestParameters request)
+            CompleteRequest request)
         {
-            string parameters = JsonConvert
+            string content = JsonConvert
                 .SerializeObject(request, new JsonSerializerSettings()
                 {
                     NullValueHandling = NullValueHandling.Ignore
@@ -123,7 +123,7 @@ namespace OpenAI.NET.Web.Controllers
                 await _client.PostAsync(
                     $"{request.Engine}/completions",
                     new StringContent(
-                        parameters,
+                        content,
                         Encoding.UTF8,
                         "application/json"));
 

@@ -1,9 +1,9 @@
 ﻿namespace OpenAI.NET.Models.Jwt.Add
 {
     /// <summary>
-    /// Parameters for sending a request to Add action.
+    /// Add action request body.
     /// </summary>
-    public class AddRequestParameters
+    public class AddRequest
     {
         /// <summary>
         /// User name.

@@ -3,9 +3,9 @@
 namespace OpenAI.NET.Models.Jwt.Remove
 {
     /// <summary>
-    /// Body received after calling Remove action.
+    /// Remove action response body.
     /// </summary>
-    public class RemoveResponseBody
+    public class RemoveResponse
     {
         /// <summary>
         /// User name.

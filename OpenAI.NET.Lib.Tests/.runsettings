@@ -1,0 +1,14 @@
+﻿<?xml version="1.0"
+	  encoding="utf-8" ?>
+<RunSettings>
+	<TestRunParameters>
+		<Parameter name="OpenAI.NET.Web.Address" 
+				   value="https://localhost:5001/"/>
+		<Parameter name="AccessToken"
+				   value="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJPcGVuQUkuTkVULlNlcnZlciIsImF1ZCI6WyJPcGVuQUkuTkVULlVzZXIiLCJPcGVuQUkuTkVULlVzZXIiXSwic3ViIjoiT3BlbkFJLk5FVC5Kd3RUb2tlbiIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWVpZGVudGlmaWVyIjoiQXlyYXQiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiQXlyYXQiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOlsiQ2FuQ2FsbEFwaSIsIkNhbk1hbmFnZVVzZXJzIiwiVW50b3VjaGFibGUiXSwibmJmIjoxNjU3ODU3NjM5LCJleHAiOjE2ODkzOTM2Mzl9.rRQwCQfu8adc-LQwqWOWHwrBRI45L9eCtEkXYgf6O34"/>
+		<Parameter name="UserName"
+				   value="Ayrat"/>
+		<Parameter name="Password"
+				   value="p455w9"/>
+	</TestRunParameters>
+</RunSettings>

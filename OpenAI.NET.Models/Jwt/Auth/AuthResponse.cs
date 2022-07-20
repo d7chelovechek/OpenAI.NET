@@ -1,9 +1,9 @@
-﻿namespace OpenAI.NET.Models.Jwt.Add
+﻿namespace OpenAI.NET.Models.Jwt.Auth
 {
     /// <summary>
-    /// Body received after calling Add action.
+    /// Auth action response body.
     /// </summary>
-    public class AddResponseBody
+    public class AuthResponse
     {
         /// <summary>
         /// User name.
@@ -14,8 +14,12 @@
         /// </summary>
         public string[] Permissions { get; set; }
         /// <summary>
-        /// Lifetime of authorization token.
+        /// Access token to OpenAI.NET.
         /// </summary>
-        public string TokenLifeTime { get; set; }
+        public string AccessToken { get; set; }
+        /// <summary>
+        /// Token expiration date.
+        /// </summary>
+        public string ExpirationDate { get; set; }
     }
 }
